@@ -1,24 +1,35 @@
-import "../styles/globals.css";
-import "@aws-amplify/ui-react/styles.css";
-import "@fontsource/inter/variable.css";
+import { Auth, getUser } from "../lib/auth";
+import { SWRConfig } from "swr";
+import { getUserFragments } from "./api/api";
 
-import { Amplify } from "aws-amplify";
+export default function App({ Component, pageProps }) {
+  let user = getUser();
+  console.log(user);
+  getUserFragments(user);
 
-import { Authenticator } from "@aws-amplify/ui-react";
-import "@aws-amplify/ui-react/styles.css";
-
-import awsExports from "./aws-exports";
-Amplify.configure(awsExports);
-
-export default function App() {
   return (
-    <Authenticator>
-      {({ signOut, user }) => (
-        <main>
-          <h1>Hello {user.username}</h1>
-          <button onClick={signOut}>Sign out</button>
-        </main>
-      )}
-    </Authenticator>
+    <>
+      <SWRConfig
+        value={{
+          fetcher: async (url) => {
+            const res = await fetch(url);
+            if (!res.ok) {
+              const error = new Error(
+                "An error occurred while fetching the data."
+              );
+              error.info = await res.json();
+              error.status = res.status;
+              throw error;
+            }
+            return res.json();
+          },
+        }}
+      >
+        <Component {...pageProps} />
+        <button onClick={() => Auth.federatedSignIn()}>Sign In</button>
+        {user && <button onClick={Auth.signOut()}>Sign Out</button>}
+        {user && <p>Hi, {user.username}</p>}
+      </SWRConfig>
+    </>
   );
 }
