@@ -1,35 +1,21 @@
-import { Auth, getUser } from "../lib/auth";
-import { SWRConfig } from "swr";
+import { Authenticator } from "@aws-amplify/ui-react";
 import { getUserFragments } from "./api/api";
+import { Auth, getUser } from "../lib/auth";
+import "@aws-amplify/ui-react/styles.css";
 
-export default function App({ Component, pageProps }) {
-  let user = getUser();
-  console.log(user);
-  getUserFragments(user);
+export default function App() {
+  function connectToApi() {
+    getUser().then((user) => getUserFragments(user));
+  }
 
   return (
-    <>
-      <SWRConfig
-        value={{
-          fetcher: async (url) => {
-            const res = await fetch(url);
-            if (!res.ok) {
-              const error = new Error(
-                "An error occurred while fetching the data."
-              );
-              error.info = await res.json();
-              error.status = res.status;
-              throw error;
-            }
-            return res.json();
-          },
-        }}
-      >
-        <Component {...pageProps} />
-        <button onClick={() => Auth.federatedSignIn()}>Sign In</button>
-        {user && <button onClick={Auth.signOut()}>Sign Out</button>}
-        {user && <p>Hi, {user.username}</p>}
-      </SWRConfig>
-    </>
+    <Authenticator signUpAttributes={["email", "name"]}>
+      {({ signOut, user }) => (
+        <main onLoad={connectToApi()}>
+          <h1>Hello {user.username}</h1>
+          <button onClick={signOut}>Sign out</button>
+        </main>
+      )}
+    </Authenticator>
   );
 }
