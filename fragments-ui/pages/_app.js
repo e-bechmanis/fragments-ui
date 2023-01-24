@@ -1,7 +1,9 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import { getUserFragments } from "./api/api";
 import { Auth, getUser } from "../lib/auth";
+import { Card, Button } from "react-bootstrap";
 import "@aws-amplify/ui-react/styles.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function App() {
   function connectToApi() {
@@ -11,10 +13,26 @@ export default function App() {
   return (
     <Authenticator signUpAttributes={["email", "name"]}>
       {({ signOut, user }) => (
-        <main onLoad={connectToApi()}>
-          <h1>Hello {user.username}</h1>
-          <button onClick={signOut}>Sign out</button>
-        </main>
+        <>
+          <Card
+            style={{
+              width: "25rem",
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "10rem",
+            }}
+            onLoad={connectToApi()}
+          >
+            <Card.Title>Hello {user.username}</Card.Title>
+            <Button
+              style={{ marginTop: "2rem" }}
+              variant="warning"
+              onClick={signOut}
+            >
+              Sign out
+            </Button>
+          </Card>
+        </>
       )}
     </Authenticator>
   );
