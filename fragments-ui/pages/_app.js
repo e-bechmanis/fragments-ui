@@ -7,7 +7,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function App() {
   function connectToApi() {
-    getUser().then((user) => getUserFragments(user));
+    getUser().then((user) => {
+      console.log(user);
+      getUserFragments(user);
+    });
   }
 
   return (
