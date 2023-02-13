@@ -41,7 +41,7 @@ export async function postUserFragment(user) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
     const data = await res.json();
-    if (res.status === 200) {
+    if (res.status === 201) {
       console.log("Success", { data });
       return data;
     }
