@@ -4,25 +4,30 @@ import { Auth, getUser } from "../lib/auth";
 import { Card, Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { postUserFragment } from "./api/api";
+import { useAtom } from "jotai";
+import { fragmentsAtom } from "../store";
+
 import "@aws-amplify/ui-react/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function App() {
-  function connectToApi() {
-    getUser().then((user) => {
+  const [fragment, setFragment] = useState("");
+  const [warning, setWarning] = useState("");
+  const [fragments, setFragments] = useAtom(fragmentsAtom);
+
+  async function connectToApi() {
+    await getUser().then((user) => {
       console.log(user);
       getUserFragments(user);
     });
   }
 
-  const [fragment, setFragment] = useState("");
-  const [warning, setWarning] = useState("");
-
   async function handleSubmit(e) {
     e.preventDefault();
-    getUser().then((user) => {
+    await getUser().then((user) => {
       try {
         postUserFragment(user, fragment);
+        setFragments(getUserFragments(user));
       } catch (err) {
         setWarning(err.message);
       }
@@ -35,7 +40,8 @@ export default function App() {
         <>
           <Card
             style={{
-              width: "25rem",
+              width: "30rem",
+              padding: "2rem",
               marginLeft: "auto",
               marginRight: "auto",
               marginTop: "10rem",
@@ -48,7 +54,7 @@ export default function App() {
               <br />
             </Card.Title>
 
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={(e) => handleSubmit(e)}>
               <Form.Group>
                 <Form.Label>Fragment</Form.Label>
                 <br />
@@ -69,9 +75,18 @@ export default function App() {
 
               <br />
               <Button variant="outline-secondary" type="submit">
-                Add
+                Add Fragment
               </Button>
             </Form>
+            <br />
+            <br />
+            {fragments && <p className="text-muted">Fragments List</p>}
+
+            {fragments.map((fragment) => (
+              <ul>
+                <li className="text-muted">{fragment}</li>
+              </ul>
+            ))}
 
             <Button
               style={{ marginTop: "2rem" }}
