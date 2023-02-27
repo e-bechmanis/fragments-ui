@@ -1,0 +1,6 @@
+.vscode/
+/fragments-ui/.next
+/fragments-ui/node_modules/
+/fragments-ui/.env
+/fragments-ui/.eslintrc.js
+/fragments-ui/.gitignore
