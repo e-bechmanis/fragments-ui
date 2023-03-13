@@ -11,5 +11,8 @@
     "url": "git+https://github.com/e-bechmanis/fragments-ui.git"
   },
   "author": "Elena Bechmanis",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "react-icons": "^4.8.0"
+  }
 }
