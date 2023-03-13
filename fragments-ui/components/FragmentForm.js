@@ -17,7 +17,7 @@ export default function FragmentForm({ user }) {
 
   return (
     <>
-      <h4 className="yellow-text">Add Fragment here</h4>
+      <h4 className="text-info">Add Fragment</h4>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <Form.Group>
           <br />
