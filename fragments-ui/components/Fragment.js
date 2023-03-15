@@ -21,15 +21,15 @@ export default function Fragment({ id }) {
             <Card.Text className="text-muted">
               <strong>ID: </strong> {data.id}
               <br />
-              <strong>Owner ID: </strong> {data.id}
+              <strong>Owner ID: </strong> {data.ownerId}
               <br />
-              <strong>Created: </strong> {data.id}
+              <strong>Created: </strong> {data.created}
               <br />
-              <strong>Updated: </strong> {data.id}
+              <strong>Updated: </strong> {data.updated}
               <br />
-              <strong>Type: </strong> {data.id}
+              <strong>Type: </strong> {data.type}
               <br />
-              <strong>Size: </strong> {data.id}
+              <strong>Size: </strong> {data.size}
               <br />
               <br />
             </Card.Text>
