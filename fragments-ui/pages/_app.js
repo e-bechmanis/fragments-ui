@@ -1,20 +1,15 @@
 import { Authenticator } from "@aws-amplify/ui-react";
-import { getUserFragments } from "./api/api";
 import { Auth, getUser } from "../lib/auth";
 import { Container, Row, Col } from "react-bootstrap";
 import MainNav from "../components/MainNav";
 import FragmentForm from "../components/FragmentForm";
+import FragmentsAccordion from "../components/FragmentsAccordion";
 
 import "@aws-amplify/ui-react/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function App() {
-  async function connectToApi() {
-    await getUser().then((user) => {
-      console.log(user);
-      getUserFragments(user);
-    });
-  }
+  const userJwt = getUser();
 
   return (
     <Authenticator signUpAttributes={["email", "name"]}>
@@ -28,9 +23,11 @@ export default function App() {
             <br />
             <Row>
               <Col>
-                <FragmentForm user={user} />
+                <FragmentForm user={userJwt} />
               </Col>
-              <Col></Col>
+              <Col>
+                <FragmentsAccordion user={userJwt} />
+              </Col>
             </Row>
           </Container>
         </>
