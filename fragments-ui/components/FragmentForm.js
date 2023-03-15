@@ -7,7 +7,6 @@ export default function FragmentForm({ user }) {
   const [fragment, setFragment] = useState("");
 
   async function handleSubmit(e) {
-    e.preventDefault();
     try {
       postUserFragment({ user }, fragment);
     } catch (err) {
