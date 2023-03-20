@@ -37,14 +37,13 @@ Amplify.configure({
  * Get the authenticated user
  * @returns Promise<user>
  */
-async function getUser() {
+async function getUser(currentAuthenticatedUser) {
   try {
     // Get the user's info, see:
     // https://docs.amplify.aws/lib/auth/advanced/q/platform/js/#identity-pool-federation
-    const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
 
     // If that didn't throw, we have a user object, and the user is authenticated
-    console.log("The user is authenticated");
+    //console.log("The user is authenticated");
 
     // Get the user's username
     const username = currentAuthenticatedUser.username;

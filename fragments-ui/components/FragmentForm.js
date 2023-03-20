@@ -3,12 +3,18 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { useState } from "react";
 import { postUserFragment } from "../pages/api/api";
 
-export default function FragmentForm({ user }) {
+export default function FragmentForm(props) {
   const [fragment, setFragment] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
+
+  function handleOptionChange(event) {
+    setSelectedOption(event.target.value);
+  }
 
   async function handleSubmit(e) {
     try {
-      postUserFragment({ user }, fragment);
+      await postUserFragment(props.user, selectedOption, fragment);
+      console.log("Posted a fragment");
     } catch (err) {
       console.log(err);
     }
@@ -21,14 +27,16 @@ export default function FragmentForm({ user }) {
         <Form.Group>
           <br />
           <Form.Group className="mb-3">
-            <Form.Select>
+            <Form.Select onChange={handleOptionChange}>
               <option>Choose fragment type</option>
-              <option>text</option>
-              <option>application/json</option>
+              <option value="text/plain">text/plain</option>
+              <option value="text/markdown">text/markdown</option>
+              <option value="text/html">text/html</option>
+              <option value="application/json">application/json</option>
             </Form.Select>
           </Form.Group>
 
-          <FloatingLabel controlId="floatingFragment" label="Add your fragment">
+          <FloatingLabel label="Add your fragment">
             <Form.Control
               type="text"
               id="text-fragment"

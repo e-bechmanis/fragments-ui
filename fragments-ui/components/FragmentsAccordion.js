@@ -3,19 +3,20 @@ import { getUserFragments } from "../pages/api/api";
 import Pagination from "react-bootstrap/Pagination";
 import Accordion from "react-bootstrap/Accordion";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
-export default function FragmentsAccordion({ user }) {
+export default function FragmentsAccordion(user) {
   const [page, setPage] = useState(1);
   const [fragments, setFragments] = useState([]);
 
-  const data = getUserFragments({ user });
-
   useEffect(() => {
-    if (data) {
-      setFragments(data);
+    async function fetchData() {
+      await getUserFragments(user).then((data) => {
+        console.log("This is what the function is returning");
+        console.log(data);
+        setFragments(data);
+      });
     }
-  }, [data]);
+    fetchData();
+  }, []);
 
   function previous(e) {
     setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
@@ -29,7 +30,8 @@ export default function FragmentsAccordion({ user }) {
     <>
       <h4 className="text-info"> Fragments Collection </h4>
       <Accordion defaultActiveKey="0">
-        {fragments.length &&
+        {fragments &&
+          fragments.length > 0 &&
           fragments.map((fragment) => (
             <Accordion.Item
               className="accordion-item"
@@ -43,17 +45,17 @@ export default function FragmentsAccordion({ user }) {
                 </span>
               </Accordion.Header>
               <Accordion.Body>
-                <strong>ID: </strong> {data.id}
+                <strong>ID: </strong> {fragment.id}
                 <br />
-                <strong>Owner ID: </strong> {data.ownerId}
+                <strong>Owner ID: </strong> {fragment.ownerId}
                 <br />
-                <strong>Created: </strong> {data.created}
+                <strong>Created: </strong> {fragment.created}
                 <br />
-                <strong>Updated: </strong> {data.updated}
+                <strong>Updated: </strong> {fragment.updated}
                 <br />
-                <strong>Type: </strong> {data.type}
+                <strong>Type: </strong> {fragment.type}
                 <br />
-                <strong>Size: </strong> {data.size}
+                <strong>Size: </strong> {fragment.size}
                 <br />
               </Accordion.Body>
             </Accordion.Item>

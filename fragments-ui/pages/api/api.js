@@ -12,10 +12,11 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
  */
 export async function getUserFragments(user) {
   console.log("Requesting user fragments data...");
+  console.log(user);
   try {
     const res = await fetch(`${apiUrl}/v1/fragments?expand=1`, {
       // Generate headers with the proper Authorization bearer token to pass
-      headers: user.authorizationHeaders(),
+      headers: user.user.authorizationHeaders(),
     });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
@@ -28,9 +29,9 @@ export async function getUserFragments(user) {
   }
 }
 
-export async function postUserFragment(user, fragment) {
+export async function postUserFragment(user, type, fragment) {
   console.log("Sending user fragments data...");
-  const idToken = user.idToken;
+  const idToken = user.user.idToken;
 
   try {
     const rawBody = Buffer.from(fragment);
@@ -38,7 +39,7 @@ export async function postUserFragment(user, fragment) {
       method: "POST",
       // Generate headers with the proper Authorization bearer token to pass
       headers: {
-        "Content-Type": "text/plain",
+        "Content-Type": type,
         Authorization: `Bearer ${idToken}`,
       },
       body: rawBody,
