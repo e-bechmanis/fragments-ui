@@ -23,7 +23,7 @@ FROM node:18.14.2-alpine3.17@sha256:0d2712ac2b2c1149391173de670406f6e3dbdb1b2ba4
 WORKDIR /app
 
 # Copy cached dependencies from previous stage so we don't have to download
-COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app /app
 
 # Copy source code into the image
 COPY . .
