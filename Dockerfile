@@ -11,7 +11,12 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json ./
+COPY ./fragments-ui/package*.json ./fragments-ui/
+
+WORKDIR /app/fragments-ui
+
+RUN apk add
 
 RUN yarn install
 
@@ -28,17 +33,19 @@ COPY --from=dependencies /app /app
 # Copy source code into the image
 COPY . .
 
+# Navigate in fragments-ui folder
+WORKDIR /app/fragments-ui
+
 RUN yarn build
 
 #################################################################################################
 
 FROM nginx:stable-alpine@sha256:2366ede62d2e26a20f7ce7d0294694fe52b166107fd346894e4658dfb5273f9c AS deploy
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY .env ./
+COPY --from=builder /app/fragments-ui/public ./public
+COPY --from=builder /app/fragments-ui/package.json ./package.json
+COPY --from=builder /app/fragments-ui/.next ./.next
+COPY --from=builder /app/fragments-ui/node_modules ./node_modules
 
 EXPOSE 3000
 
