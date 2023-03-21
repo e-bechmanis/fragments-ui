@@ -3,7 +3,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { useState } from "react";
 import { postUserFragment } from "../pages/api/api";
 
-export default function FragmentForm(props) {
+export default function FragmentForm({ user }) {
   const [fragment, setFragment] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
 
@@ -12,8 +12,9 @@ export default function FragmentForm(props) {
   }
 
   async function handleSubmit(e) {
+    e.preventDefault();
     try {
-      await postUserFragment(props.user, selectedOption, fragment);
+      await postUserFragment(user, selectedOption, fragment);
       console.log("Posted a fragment");
     } catch (err) {
       console.log(err);
