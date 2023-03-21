@@ -21,8 +21,6 @@ export default function App() {
 
   async function connectToApi() {
     const user = await Auth.currentAuthenticatedUser();
-    console.log("Here is the initial user");
-    console.log(user);
     const simplifiedUser = await getUser(user);
     setUserJwt(simplifiedUser);
   }
@@ -38,12 +36,16 @@ export default function App() {
             <br />
             <br />
             <Row>
-              <Col>
-                <FragmentForm user={userJwt} />
-              </Col>
-              <Col>
-                <FragmentsAccordion user={userJwt} />
-              </Col>
+              {Object.keys(userJwt).length !== 0 && (
+                <>
+                  <Col>
+                    <FragmentForm user={userJwt} />
+                  </Col>
+                  <Col>
+                    <FragmentsAccordion user={userJwt} />
+                  </Col>
+                </>
+              )}
             </Row>
           </Container>
         </>
