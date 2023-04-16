@@ -29,6 +29,29 @@ export async function getUserFragments({ user }) {
   }
 }
 
+/**
+ * Given an authenticated user, delete fragment for this user from the
+ * fragments microservice. We expect a user
+ * to have an `idToken` attached, so we can send that along with the request.
+ */
+export async function deleteUserFragments({ user }, id) {
+  console.log("Deleting user fragments data...");
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
+      method: "DELETE",
+      headers: user.authorizationHeaders(),
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const data = await res.json();
+    console.log("Deleted user fragments data", { data });
+    return data;
+  } catch (err) {
+    console.error("Unable to call DELETE /v1/fragments/:id", { err });
+  }
+}
+
 export async function postUserFragment(user, type, fragment) {
   console.log("Sending user fragments data...");
   console.log(user);
@@ -64,6 +87,39 @@ export async function postUserFragment(user, type, fragment) {
     }
   } catch (err) {
     console.error("Unable to call POST /v1/fragments", { err });
+  }
+}
+
+export async function updateUserFragment(user, type, id, fragment) {
+  console.log("Updating user fragments data...");
+  console.log(fragment);
+  const idToken = user.idToken;
+  // IF content-type is application/json, we need to stringify the data to be able to send it
+  if (type === "application/json") {
+    fragment = JSON.stringify(fragment);
+  }
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": type,
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: fragment,
+    });
+    if (!res.ok) {
+      console.log(res.status, res.statusText);
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const data = await res.json();
+    console.log("Data received from PUT request");
+    console.log(data);
+    if (res.status === 201) {
+      console.log("Success", { data });
+      return { data };
+    }
+  } catch (err) {
+    console.error("Unable to call PUT /v1/fragments", { err });
   }
 }
 
