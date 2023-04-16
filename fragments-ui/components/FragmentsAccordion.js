@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { getUserFragments } from "../pages/api/api";
+import { getUserFragments, deleteUserFragments } from "../pages/api/api";
 import Pagination from "react-bootstrap/Pagination";
+import UpdateForm from "./UpdateForm";
 import Accordion from "react-bootstrap/Accordion";
-import Button from "react-bootstrap/Button";
+import { Button, Form } from "react-bootstrap";
 import { FiDelete } from "react-icons/fi";
 
 export default function FragmentsAccordion(user) {
@@ -18,7 +19,7 @@ export default function FragmentsAccordion(user) {
       });
     }
     fetchData();
-  }, [fragments]);
+  }, []);
 
   function previous(e) {
     setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
@@ -28,12 +29,11 @@ export default function FragmentsAccordion(user) {
     setPage((prevPage) => prevPage + 1);
   }
 
-  function handleDelete(id) {
-    // Logic to delete fragment with the given id
-  }
-
-  function handleUpdate(id) {
-    // Logic to update fragment with the given id
+  async function handleDelete(id) {
+    console.log("Clicked delete button");
+    await deleteUserFragments(user, id).then((data) => {
+      console.log(data);
+    });
   }
 
   return (
@@ -67,22 +67,15 @@ export default function FragmentsAccordion(user) {
                 <br />
                 <strong>Size: </strong> {fragment.size}
                 <br />
-                <div className="float-end">
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => handleUpdate(fragment.id)}
-                  >
-                    Update
-                  </Button>
-                  &nbsp;&nbsp;
-                  <Button
-                    variant="outline-danger"
-                    onClick={() => handleDelete(fragment.id)}
-                  >
-                    Delete &nbsp;
-                    <FiDelete />
-                  </Button>
-                </div>
+                <UpdateForm user={user} id={fragment.id} type={fragment.type} />
+                <Button
+                  variant="outline-danger"
+                  className="float-end"
+                  onClick={() => handleDelete(fragment.id)}
+                >
+                  Delete &nbsp;
+                  <FiDelete />
+                </Button>
                 <br />
               </Accordion.Body>
             </Accordion.Item>
