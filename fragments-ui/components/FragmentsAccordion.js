@@ -70,7 +70,6 @@ export default function FragmentsAccordion(user) {
                 <UpdateForm user={user} id={fragment.id} type={fragment.type} />
                 <Button
                   variant="outline-danger"
-                  className="float-end"
                   onClick={() => handleDelete(fragment.id)}
                 >
                   Delete &nbsp;
