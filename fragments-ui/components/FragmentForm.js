@@ -2,9 +2,13 @@ import { Button, Form } from "react-bootstrap";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { useState } from "react";
 import { postUserFragment } from "../pages/api/api";
+import { useAtom } from "jotai";
+import { fragmentsAtom } from "../store";
+import { getUserFragments } from "../pages/api/api";
 
 export default function FragmentForm({ user }) {
   const [fragment, setFragment] = useState("");
+  const [fragments, setFragments] = useAtom(fragmentsAtom);
   const [selectedOption, setSelectedOption] = useState("");
   const [file, setFile] = useState(null);
 
@@ -16,6 +20,12 @@ export default function FragmentForm({ user }) {
     setFile(event.target.files[0]);
   }
 
+  async function updateFragments() {
+    await getUserFragments(user).then((data) => {
+      setFragments(data);
+    });
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -23,11 +33,13 @@ export default function FragmentForm({ user }) {
         const formData = new FormData();
         formData.append("fragment", file);
         await postUserFragment(user, selectedOption, formData, true);
+        await updateFragments();
       } else if (
         selectedOption.startsWith("text/") ||
         selectedOption === "application/json"
       ) {
         await postUserFragment(user, selectedOption, fragment);
+        await updateFragments();
       } else {
         throw new Error("Invalid fragment type");
       }

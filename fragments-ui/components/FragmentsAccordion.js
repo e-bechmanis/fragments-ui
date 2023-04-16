@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useAtom } from "jotai";
+import { fragmentsAtom } from "../store";
 import { getUserFragments, deleteUserFragments } from "../pages/api/api";
 import Pagination from "react-bootstrap/Pagination";
 import UpdateForm from "./UpdateForm";
@@ -8,7 +10,7 @@ import { FiDelete } from "react-icons/fi";
 
 export default function FragmentsAccordion(user) {
   const [page, setPage] = useState(1);
-  const [fragments, setFragments] = useState([]);
+  const [fragments, setFragments] = useAtom(fragmentsAtom);
 
   useEffect(() => {
     async function fetchData() {
