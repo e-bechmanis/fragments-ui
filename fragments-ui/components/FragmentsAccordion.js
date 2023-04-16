@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { getUserFragments } from "../pages/api/api";
 import Pagination from "react-bootstrap/Pagination";
 import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/Button";
+import { FiDelete } from "react-icons/fi";
 
 export default function FragmentsAccordion(user) {
   const [page, setPage] = useState(1);
@@ -16,7 +18,7 @@ export default function FragmentsAccordion(user) {
       });
     }
     fetchData();
-  }, []);
+  }, [fragments]);
 
   function previous(e) {
     setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
@@ -24,6 +26,14 @@ export default function FragmentsAccordion(user) {
 
   function next(e) {
     setPage((prevPage) => prevPage + 1);
+  }
+
+  function handleDelete(id) {
+    // Logic to delete fragment with the given id
+  }
+
+  function handleUpdate(id) {
+    // Logic to update fragment with the given id
   }
 
   return (
@@ -56,6 +66,23 @@ export default function FragmentsAccordion(user) {
                 <strong>Type: </strong> {fragment.type}
                 <br />
                 <strong>Size: </strong> {fragment.size}
+                <br />
+                <div className="float-end">
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => handleUpdate(fragment.id)}
+                  >
+                    Update
+                  </Button>
+                  &nbsp;&nbsp;
+                  <Button
+                    variant="outline-danger"
+                    onClick={() => handleDelete(fragment.id)}
+                  >
+                    Delete &nbsp;
+                    <FiDelete />
+                  </Button>
+                </div>
                 <br />
               </Accordion.Body>
             </Accordion.Item>
