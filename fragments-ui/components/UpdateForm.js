@@ -3,7 +3,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { useState } from "react";
 import { updateUserFragment } from "../pages/api/api";
 
-export default function UpdateForm({ user }, id, type) {
+export default function UpdateForm({ user, id, type }) {
   const [fragment, setFragment] = useState("");
   const [file, setFile] = useState(null);
 
@@ -34,8 +34,9 @@ export default function UpdateForm({ user }, id, type) {
     }
   }
 
-  const isText = type.startsWith("text/") || type === "application/json";
-  const isImage = type.startsWith("image/");
+  const isText =
+    type && (type.startsWith("text/") || type === "application/json");
+  const isImage = type && type.startsWith("image/");
 
   return (
     <>
@@ -43,12 +44,11 @@ export default function UpdateForm({ user }, id, type) {
         <Form.Group>
           <br />
           {isText && (
-            <FloatingLabel label="Copy your updated fragment here">
+            <FloatingLabel label="Copy your updated fragment here and click 'Update'">
               <Form.Control
                 type="text"
                 id="text-fragment"
                 name="text-fragment"
-                placeholder="Copy your text or json fragment here"
                 value={fragment}
                 onChange={(e) => setFragment(e.target.value)}
               />
