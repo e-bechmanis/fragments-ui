@@ -24,13 +24,7 @@ export default function MainNav({ signOut, username }) {
               Hello, {username} &nbsp;
               <FaUserAlt />
             </Nav.Link>
-            &nbsp;&nbsp;
-            <Link href="/fragments" passHref legacyBehavior>
-              <Nav.Link active={router.pathname === "/fragments"}>
-                All fragments
-              </Nav.Link>
-            </Link>
-            &nbsp;&nbsp;
+            &nbsp;&nbsp; &nbsp;&nbsp;
             <Button variant="warning" onClick={signOut}>
               Sign out
             </Button>

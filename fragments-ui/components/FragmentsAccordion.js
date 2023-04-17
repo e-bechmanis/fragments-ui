@@ -41,6 +41,8 @@ export default function FragmentsAccordion(user) {
   return (
     <>
       <h4 className="text-info"> Fragments Collection </h4>
+      <hr />
+      <br />
       <Accordion defaultActiveKey="0">
         {fragments &&
           fragments.length > 0 &&
