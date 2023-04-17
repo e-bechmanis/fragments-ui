@@ -5,6 +5,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import MainNav from "../components/MainNav";
 import FragmentForm from "../components/FragmentForm";
 import FragmentsAccordion from "../components/FragmentsAccordion";
+import ViewFragment from "../components/ViewFragments";
 
 import "@aws-amplify/ui-react/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -40,6 +41,7 @@ export default function App() {
                 <>
                   <Col>
                     <FragmentForm user={userJwt} />
+                    <ViewFragment user={userJwt} />
                   </Col>
                   <Col>
                     <FragmentsAccordion user={userJwt} />
