@@ -1,10 +1,13 @@
 import { Button, Form } from "react-bootstrap";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { useState } from "react";
-import { updateUserFragment } from "../pages/api/api";
+import { updateUserFragment, getUserFragments } from "../pages/api/api";
+import { useAtom } from "jotai";
+import { fragmentsAtom } from "../store";
 
 export default function UpdateForm({ user, id, type }) {
   const [fragment, setFragment] = useState("");
+  const [fragments, setFragments] = useAtom(fragmentsAtom);
   const [file, setFile] = useState(null);
 
   function handleFileChange(event) {
@@ -29,6 +32,9 @@ export default function UpdateForm({ user, id, type }) {
       console.log("Updated a fragment");
       setFragment("");
       setFile(null);
+      await getUserFragments(user).then((data) => {
+        setFragments(data);
+      });
     } catch (err) {
       console.log(err);
     }

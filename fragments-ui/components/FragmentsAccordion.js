@@ -5,7 +5,7 @@ import { getUserFragments, deleteUserFragments } from "../pages/api/api";
 import Pagination from "react-bootstrap/Pagination";
 import UpdateForm from "./UpdateForm";
 import Accordion from "react-bootstrap/Accordion";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { FiDelete } from "react-icons/fi";
 
 export default function FragmentsAccordion(user) {
@@ -35,6 +35,9 @@ export default function FragmentsAccordion(user) {
     console.log("Clicked delete button");
     await deleteUserFragments(user, id).then((data) => {
       console.log(data);
+    });
+    await getUserFragments(user).then((data) => {
+      setFragments(data);
     });
   }
 
