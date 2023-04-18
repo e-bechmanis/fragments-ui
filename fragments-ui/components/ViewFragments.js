@@ -1,4 +1,4 @@
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { useState } from "react";
 import { useAtom } from "jotai";
 import { fragmentsAtom } from "../store";
@@ -6,8 +6,11 @@ import { getFragmentById } from "../pages/api/api";
 
 export default function ViewFragment({ user }) {
   const [fragments, setFragments] = useAtom(fragmentsAtom);
-  const [selectedFragment, setSelectedFragment] = useState("");
+  const [selectedFragment, setSelectedFragment] = useState();
   const [type, setType] = useState("N/A");
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   function handleFragmentChange(event) {
     setSelectedFragment(event.target.value);
@@ -20,14 +23,23 @@ export default function ViewFragment({ user }) {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      if (type == "N/A") {
-        await getFragmentById({ user }, selectedFragment);
-      } else console.log("Hi");
+      const data = await getFragmentById({ user }, selectedFragment, type);
       setType("N/A");
+      setModalData(data.data);
+      if (data.type.startsWith("image")) {
+        const imageUrl = URL.createObjectURL(data.data);
+        console.log(imageUrl);
+        setImageUrl(imageUrl);
+      }
+      setShowModal(true);
       console.log("GET request was successful");
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function handleCloseModal() {
+    setShowModal(false);
   }
 
   return (
@@ -41,6 +53,7 @@ export default function ViewFragment({ user }) {
             Select <em>Fragment ID</em> to view the data
           </Form.Label>
           <Form.Select onChange={handleFragmentChange} value={selectedFragment}>
+            <option>-</option>
             {fragments &&
               fragments.length > 0 &&
               fragments.map((fragment) => <option>{fragment.id}</option>)}
@@ -78,6 +91,20 @@ export default function ViewFragment({ user }) {
           </Button>
         )}
       </Form>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Fragment Data</Modal.Title>
+        </Modal.Header>
+        {imageUrl && <img src={imageUrl} alt="Fetched Image" />}
+        {modalData && !imageUrl && <Modal.Body>{modalData}</Modal.Body>}
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <br />
       <br />
     </>
