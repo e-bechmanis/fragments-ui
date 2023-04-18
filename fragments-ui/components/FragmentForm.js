@@ -21,7 +21,7 @@ export default function FragmentForm({ user }) {
   }
 
   async function updateFragments() {
-    await getUserFragments(user).then((data) => {
+    await getUserFragments({ user }).then((data) => {
       setFragments(data);
     });
   }
@@ -30,23 +30,35 @@ export default function FragmentForm({ user }) {
     e.preventDefault();
     try {
       if (selectedOption.startsWith("image/") && file) {
-        const formData = new FormData();
-        formData.append("fragment", file);
-        await postUserFragment(user, selectedOption, formData, true);
-        await updateFragments();
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = async function () {
+          const buffer = reader.result;
+          const response = await postUserFragment(
+            user,
+            selectedOption,
+            buffer,
+            true
+          );
+          console.log(response);
+          await updateFragments();
+          console.log("Posted a fragment");
+          setFragment("");
+          setFile(null);
+          setSelectedOption("");
+        };
       } else if (
         selectedOption.startsWith("text/") ||
         selectedOption === "application/json"
       ) {
         await postUserFragment(user, selectedOption, fragment);
+        console.log("Posted a fragment");
+        setFragment("");
+        setSelectedOption("");
         await updateFragments();
       } else {
         throw new Error("Invalid fragment type");
       }
-      console.log("Posted a fragment");
-      setFragment("");
-      setFile(null);
-      setSelectedOption("");
     } catch (err) {
       console.log(err);
     }
