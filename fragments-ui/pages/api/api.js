@@ -90,7 +90,7 @@ export async function postUserFragment(user, type, fragment) {
   }
 }
 
-export async function updateUserFragment(user, type, id, fragment) {
+export async function updateUserFragment({ user }, type, id, fragment) {
   console.log("Updating user fragments data...");
   console.log(fragment);
   const idToken = user.idToken;
@@ -123,19 +123,62 @@ export async function updateUserFragment(user, type, id, fragment) {
   }
 }
 
-export async function getFragmentById({ user }, id) {
+export async function getFragmentById({ user }, id, ext = "N/A") {
   console.log("Requesting user fragment data");
-  try {
-    const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
-      // Generate headers with the proper Authorization bearer token to pass
-      headers: user.authorizationHeaders(),
-    });
-    if (!res.ok) {
-      throw new Error(`${res.status} ${res.statusText}`);
+  if (ext == "N/A") {
+    try {
+      console.log(`URL being called is ${apiUrl} /v1/fragments/ ${id}`);
+      const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
+        method: "GET",
+        // Generate headers with the proper Authorization bearer token to pass
+        headers: user.authorizationHeaders(),
+      });
+      if (!res.ok) {
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+      const contentType = res.headers.get("content-type");
+      console.log("Content-type is ", contentType);
+      let data = "";
+      if (contentType.startsWith("image")) {
+        data = await res.blob();
+      } else if (contentType.startsWith("application")) {
+        data = await res.json();
+      } else {
+        data = await res.text();
+      }
+      console.log(typeof data);
+      console.log(data);
+      return { data: data, type: contentType };
+    } catch (err) {
+      console.error("Unable to call GET /v1/fragments", { err });
     }
-    const data = await res.json();
-    console.log("Got user fragment data", { data });
-  } catch (err) {
-    console.error("Unable to call GET /v1/fragments", { err });
+  } else {
+    console.log("Non/N/A extension");
+    console.log(`${apiUrl}/v1/fragments/${id}${ext}`);
+    try {
+      const res = await fetch(`${apiUrl}/v1/fragments/${id}${ext}`, {
+        method: "GET",
+        // Generate headers with the proper Authorization bearer token to pass
+        headers: user.authorizationHeaders(),
+      });
+      console.log(res);
+      if (!res.ok) {
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+      const contentType = res.headers.get("content-type");
+      let data = "";
+      if (contentType.startsWith("image")) {
+        data = await res.blob();
+      } else if (contentType.startsWith("application")) {
+        data = await res.json();
+      } else {
+        data = await res.text();
+      }
+      console.log(typeof data);
+      console.log(data);
+      return { data: data, type: contentType };
+    } catch (err) {
+      console.error("Unable to call GET /v1/fragments", { err });
+    }
   }
 }
